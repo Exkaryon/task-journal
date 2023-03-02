@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="stylesheet" href="style.css" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Tauri App</title>
+        <script type="module" src="/main.js" defer></script>
+    </head>
+
+    <body>
+        <div id="mess">Сообщения об обновлении</div>
+
+        <div id="modal" class="hidden">
+
+            <section class="addcat hidden">
+                <span class="close">❌</span>
+                <h3>Новая категория</h3>
+                <input type="text" name="addcat" value="">
+                <button data-action="addcat" class="blue">Добавить</button>
+            </section>
+
+            <section class="category hidden">
+                <span class="close">❌</span>
+                <h3>Категория</h3>
+                <input type="text" name="editcat" value="">
+                <button data-action="editcat" class="blue">Переименовать</button>
+                <button data-action="deletecat" class="red">Удалить</button>
+                <h3>Новая задача</h3>
+                <input type="text" name="newtask" value="">
+                <button data-action="newtask" class="green">Добавить</button>
+            </section>
+
+            <section class="task hidden">
+                <span class="close">❌</span>
+                <h3>Задача</h3>
+                <input type="text" name="edittask" value="">
+                <button data-action="edittask" class="blue">Переименовать</button>
+                <div class="selector">
+                    <div class="button green">Изменить статус</div>
+                    <div class="options">
+                        <span class="close">❌</span>
+                        <button data-action="changestat" data-value="true" class="green">Выполнено</button>
+                        <button data-action="changestat" data-value="false">Не выполнено</button>
+                        <button data-action="changestat" data-value="defer" class="violet">Отложено</button>
+                        <button data-action="changestat" data-value="reject" class="red">Отклонено</button>
+                        <button data-action="changestat" data-value="long" class="grey">Долгосрочный</button>
+                        <button data-action="changestat" data-value="extra" class="orange">Приоритетный</button>
+                    </div>
+                </div>
+                <button data-action="deletetask" class="red">Удалить</button>
+                <h3>Новая подзадача</h3>
+                <input type="text" name="newsubtask" value="">
+                <button data-action="newsubtask" class="blue">Добавить</button>
+            </section>
+
+            <section class="subtask hidden">
+                <span class="close">❌</span>
+                <h3>Подзадача</h3>
+                <input type="text" name="editsubtask" value="">
+                <button data-action="editsubtask" class="blue">Переименовать</button>
+                <div class="selector">
+                    <div class="button green">Изменить статус</div>
+                    <div class="options">
+                        <span class="close">❌</span>
+                        <button data-action="changestat" data-value="true" class="green">Выполнено</button>
+                        <button data-action="changestat" data-value="false">Не выполнено</button>
+                        <button data-action="changestat" data-value="reject" class="red">Отклонено</button>
+                    </div>
+                </div>
+                <button data-action="deletesubtask" class="red">Удалить</button>
+            </section>
+
+        </div>
+
+        <div class="container">
+            <div id="control">
+                <button class="green">Добавить категорию</button>
+            </div>
+            <div id="tasklist">
+
+            </div>
+
+        </div>
+    </body>
+</html>
