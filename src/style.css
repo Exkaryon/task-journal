@@ -162,14 +162,74 @@ button:hover, .button:hover {
     border:solid 1px #059;
 }
 
+
+#control {
+    display: flex;
+    justify-content: space-between;
+}
+
 #control, #tasklist {
     padding: 14px 14px 0;
+}
+
+#control .connect {
+    text-shadow: 0 0 15px orangered, 0 0 5px red;
+} 
+
+#control .connect::after {
+    content: 'Удаленный журнал недоступен';
+    font-size: 12px;
+    color: #b00;
+    margin-left: 5px;
+    text-shadow: none;
+    position: relative;
+    top: -2px;
+}
+
+#control .connect.ok {
+    text-shadow: 0 0 15px yellowgreen, 0 0 5px yellowgreen;
+}
+#control .connect.ok::after {
+    content: 'Работа с удаленным журналом';
+    color: #090;
+}
+
+#control .connect.loc {
+    text-shadow: 0 0 15px #f90, 0 0 5px #f50;
+} 
+
+#control .connect.loc::after {
+    content: 'Работа с локальным журналом';
+    color: #f70c;
+}
+
+
+#control .sync {
+    filter: hue-rotate(147deg);
+} 
+#control .sync::after {
+    content: 'Синхронизация журналов отключена';
+    font-size: 12px;
+    color: #05f;
+    margin-left: 5px;
+    text-shadow: none;
+    position: relative;
+    top: -2px;
+}
+#control .sync.ok {
+    filter: hue-rotate(270deg);
+}
+#control .sync.ok::after {
+    content: 'Синхронизация журналов включена';
+    color: #09f;
 }
 
 #tasklist h2 {
     font-size: 24px;
     margin: 25px 0 10px 0;
 }
+
+
 
 
 

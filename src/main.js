@@ -5,19 +5,16 @@ const fs = window.__TAURI__.fs;
 import Journal from './journal.js';
 import * as ui from './ui.js';
 
-const journal = new Journal(fs);
-export let tasksData = {categories: []};
+export const journal = new Journal(fs);
 
 
 
 
 // Генерация списка задач по файлу списка задач
 (async () => {
-    const exist = await journal.taskfileCheck();
-    if(exist === true){
-        tasksData = await journal.readTaskfile();
-        ui.showTasks(tasksData);
-    };
+    await journal.getJournalData();
+    ui.showState();
+    ui.showTasks();
 })();
 
 
@@ -26,8 +23,9 @@ export let tasksData = {categories: []};
 export async function actions(params){
 
     async function saveAndUpdate(mess){
+        journal.data.updateCount++;
         ui.showTasks();
-        await journal.saveData(tasksData);
+        await journal.saveData();
         ui.updateMessenger(mess);
     }
 
@@ -35,55 +33,55 @@ export async function actions(params){
     switch(params.actionName){
         case 'addcat':
             if(!params.value) return;
-            tasksData.categories.push({title: params.value});
+            journal.data.categories.push({title: params.value});
             saveAndUpdate('Категория добавлена.');
             break;
         case 'editcat':
             if(!params.value) return;
-            tasksData.categories[addr[0]].title = params.value;
+            journal.data.categories[addr[0]].title = params.value;
             saveAndUpdate('Категория обновлена.');
             break;
         case 'deletecat':
             let dlt = await confirm("Удалить категорию?");
             if(!dlt) return;
             let newCats = [];
-            tasksData.categories.forEach((el, index) => {
+            journal.data.categories.forEach((el, index) => {
                 if(index != +addr[0]){
                     newCats.push(el);
                 }
             });
-            tasksData.categories = newCats;
+            journal.data.categories = newCats;
             saveAndUpdate('Категория удалена.');
             break;
         case 'newtask':
             if(!params.value) return;
-            if(!tasksData.categories[addr[0]].tasks) tasksData.categories[addr[0]].tasks = [];
-            tasksData.categories[addr[0]].tasks.push({
+            if(!journal.data.categories[addr[0]].tasks) journal.data.categories[addr[0]].tasks = [];
+            journal.data.categories[addr[0]].tasks.push({
                 text: params.value,
                 complete: false,
             });
             saveAndUpdate('Задача добавлена.');
             break;
         case 'edittask':
-            tasksData.categories[addr[0]].tasks[addr[1]].text = params.value;
+            journal.data.categories[addr[0]].tasks[addr[1]].text = params.value;
             saveAndUpdate('Задача обновлена.');
             break;
         case 'deletetask':
             let dlttask = await confirm("Удалить задачу?");
             if(!dlttask) return;
             let newTasks = [];
-            tasksData.categories[addr[0]].tasks.forEach((el, index) => {
+            journal.data.categories[addr[0]].tasks.forEach((el, index) => {
                 if(index != +addr[1]){
                     newTasks.push(el);
                 }
             });
-            tasksData.categories[addr[0]].tasks = newTasks;
+            journal.data.categories[addr[0]].tasks = newTasks;
             saveAndUpdate('Задача удалена.');
             break;
         case 'newsubtask':
             if(!params.value) return;
-            if(!tasksData.categories[addr[0]].tasks[addr[1]].subtasks) tasksData.categories[addr[0]].tasks[addr[1]].subtasks = [];
-            tasksData.categories[addr[0]].tasks[addr[1]].subtasks.push({
+            if(!journal.data.categories[addr[0]].tasks[addr[1]].subtasks) journal.data.categories[addr[0]].tasks[addr[1]].subtasks = [];
+            journal.data.categories[addr[0]].tasks[addr[1]].subtasks.push({
                 text: params.value,
                 complete: false,
             });
@@ -91,26 +89,26 @@ export async function actions(params){
             break;
         case 'editsubtask':
             if(!params.value) return;
-            tasksData.categories[addr[0]].tasks[addr[1]].subtasks[addr[2]].text = params.value;
+            journal.data.categories[addr[0]].tasks[addr[1]].subtasks[addr[2]].text = params.value;
             saveAndUpdate('Подзадача обновлена.');
             break;
         case 'deletesubtask':
             let dltsubtask = await confirm("Удалить подзадачу?");
             if(!dltsubtask) return;
             let newSubTasks = [];
-            tasksData.categories[addr[0]].tasks[addr[1]].subtasks.forEach((el, index) => {
+            journal.data.categories[addr[0]].tasks[addr[1]].subtasks.forEach((el, index) => {
                 if(index != +addr[2]){
                     newSubTasks.push(el);
                 }
             });
-            tasksData.categories[addr[0]].tasks[addr[1]].subtasks = newSubTasks;
+            journal.data.categories[addr[0]].tasks[addr[1]].subtasks = newSubTasks;
             saveAndUpdate('Подзадача удалена.');
             break;
         case 'changestat':
             if(addr.length == 2){
-                tasksData.categories[addr[0]].tasks[addr[1]].complete = params.value;
+                journal.data.categories[addr[0]].tasks[addr[1]].complete = params.value;
             }else if(addr.length == 3){
-                tasksData.categories[addr[0]].tasks[addr[1]].subtasks[addr[2]].complete = params.value;
+                journal.data.categories[addr[0]].tasks[addr[1]].subtasks[addr[2]].complete = params.value;
             }
             saveAndUpdate('Статус задачи обновлен.');
             break;

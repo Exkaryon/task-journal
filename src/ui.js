@@ -3,7 +3,6 @@
 import * as main from  './main.js';
 
 
-
 const taskList = document.querySelector('#tasklist');
 const modal = document.querySelector('#modal');
 const messBox = document.querySelector('#mess');
@@ -56,14 +55,14 @@ function showModal(obj, sectionClass){
     const addr = obj.dataset.addr.split(',');
     switch(sectionClass){
         case 'category':
-            activeSection.querySelector('input[name="editcat"]').value = main.tasksData.categories[addr[0]].title;
+            activeSection.querySelector('input[name="editcat"]').value = main.journal.data.categories[addr[0]].title;
             break;
         case 'task':
-            activeSection.querySelector('input[name="edittask"]').value = main.tasksData.categories[addr[0]].tasks[addr[1]].text;
+            activeSection.querySelector('input[name="edittask"]').value = main.journal.data.categories[addr[0]].tasks[addr[1]].text;
             break;
         case 'subtask':
-            console.log(main.tasksData.categories[addr[0]].tasks[addr[1]].subtasks[addr[2]].text)
-            activeSection.querySelector('input[name="editsubtask"]').value = main.tasksData.categories[addr[0]].tasks[addr[1]].subtasks[addr[2]].text;
+            console.log(main.journal.data.categories[addr[0]].tasks[addr[1]].subtasks[addr[2]].text)
+            activeSection.querySelector('input[name="editsubtask"]').value = main.journal.data.categories[addr[0]].tasks[addr[1]].subtasks[addr[2]].text;
             break;
     }
 }
@@ -81,10 +80,21 @@ export function updateMessenger(mess){
 }
 
 
+
+export function showState(){
+    if(main.journal.state.remote.access){
+        document.querySelector('#control .connect').classList.add(main.journal.onlyType == 'local' ? 'loc' : 'ok');
+    }
+    if(!main.journal.onlyType){
+        document.querySelector('#control .sync').classList.add('ok');
+    }
+}
+
+
 // Вывод списка задач по категориям
 export function showTasks(){
     let tasksHTML = '';
-    main.tasksData.categories.forEach((cat, key) => {
+    main.journal.data.categories.forEach((cat, key) => {
         tasksHTML += `<section><h2 class="cat" data-addr="${key}"> ${cat.title}</h2>`;
         if(cat.tasks){
             let taskHTML = '';
