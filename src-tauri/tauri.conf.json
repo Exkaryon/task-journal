@@ -59,10 +59,10 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 600,
+        "height": 640,
         "resizable": true,
         "title": "task-manager",
-        "width": 800
+        "width": 1024
       }
     ]
   }

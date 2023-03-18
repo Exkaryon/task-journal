@@ -2,7 +2,7 @@ export default class Journal {
 
     baseDir = null;
     fileName = 'tasks-file.json';
-    remoteAddr = 'http://127.0.0.5:85/taskdata_dispenser.php';
+    remoteAddr = 'http://127.0.0.5:85/taskdata_dispenser.php?app_enter_key=tauri_app'; // Для релиза необходим https!
     data = null;
     onlyType = false;               // Будет обновлятся/считываться только локальный или удаленный файл. local/remote
     state = {                       // Состояние доступности файлов журнала, их идентификаторы и данные.
@@ -43,12 +43,15 @@ export default class Journal {
     // Проверка наличия удаленного файла задач и его чтение.
     async readRemoteTaskfile(){
         let mscData = null;
+        //alert(this.remoteAddr);
+        
         try {
             let response = await fetch(this.remoteAddr);
             mscData = await response.json();
             this.state.remote.access = true;
         } catch (error) {
             console.warn('Удаленный файл журнала недоступен!');
+            alert(error);
         }
         return mscData;
     }
@@ -100,7 +103,7 @@ export default class Journal {
 
 
     async writeRemoteTaskfile(content){
-        let response = await fetch(this.remoteAddr+'?data='+content);
+        let response = await fetch(this.remoteAddr+'&data='+content);
         const result = await response.text(); 
         console.log('Удаленный файл: '+result);
     }
