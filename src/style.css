@@ -225,7 +225,7 @@ button:hover, .button:hover {
 }
 
 #tasklist h2 {
-    font-size: 24px;
+    font-size: 22px;
     margin: 25px 0 10px 0;
 }
 
@@ -234,11 +234,10 @@ button:hover, .button:hover {
 
 
 #tasklist div.task {
-    margin:5px 0 10px;
-    border:dashed 1px #ccc;
+    margin:1px 0 1px;
     background-color: #e3e3e3;
     border-radius: 10px;
-    padding: 10px;
+    padding: 5px;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -248,20 +247,19 @@ button:hover, .button:hover {
 
 #tasklist div.task::after {
     content: '🕑';
-    font-size: 24px;
+    font-size: 18px;
     display: block;
     position: absolute;
-    right: 10px;
-    top: 10px;
+    right: 5px;
+    top: 6px;
 }
 
 #tasklist div.task::before {
     content: 'Отложено';
-    font-size: 14px;
+    font-size: 13px;
     display: block;
     position: absolute;
-    right: 10px;
-    bottom: 0px;
+    right: 35px;
 }
 
 
@@ -290,10 +288,11 @@ button:hover, .button:hover {
 #tasklist div.task[data-complete="extra"]::before {content: 'приоритетное'; color: #0009;}
 
 #tasklist div.task h3 {
-    font-size: 18px;
+    font-size: 16px;
     margin: 0;
     padding-left: 36px;
     position: relative;
+    padding-right: 120px;
 }
 
 #tasklist div.task h3 span {
@@ -307,6 +306,7 @@ button:hover, .button:hover {
     background: #ccc;
     text-align: center;
     font-size: 16px;
+    top: -1px;
 }
 
 
@@ -322,6 +322,8 @@ button:hover, .button:hover {
 
 #tasklist div.subtask {
     margin:0 0 0 36px;
+    font-size: 14px;
+    line-height: 140%;
 }
 
 #tasklist div.subtask[data-complete="true"] {color: #070; text-shadow: 0 0 5px #9f0;}
