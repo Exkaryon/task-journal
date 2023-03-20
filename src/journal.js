@@ -53,7 +53,7 @@ export default class Journal {
             console.warn('Удаленный файл журнала недоступен!');
             alert(error);
         }
-        return mscData;
+        return this.encodeDecodeData(mscData, false)
     }
 
 
@@ -89,7 +89,6 @@ export default class Journal {
     // Сохранение файлов.
     async saveData(){
         const content = JSON.stringify(this.data);
-
         if(this.onlyType == 'remote'){
             this.writeRemoteTaskfile(content);
         }else if(this.onlyType == 'local'){
@@ -103,7 +102,10 @@ export default class Journal {
 
 
     async writeRemoteTaskfile(content){
-        let response = await fetch(this.remoteAddr+'&data='+content);
+        const encodedData = this.encodeDecodeData(JSON.parse(content), true);       // Для глубокого клонирования используется методы кодирования JSON.
+        const encodedContent = JSON.stringify(encodedData);
+
+        let response = await fetch(this.remoteAddr+'&data='+encodedContent);
         const result = await response.text(); 
         console.log('Удаленный файл: '+result);
     }
@@ -112,4 +114,79 @@ export default class Journal {
         await this.fs.writeTextFile(this.fileName, content, { dir: this.baseDir });
         console.log('Локальный журнал обновлен.')
     }
+
+
+
+    // Метод кодирования/декодирования строк (для хранения/извлечения данных на общедоступных сетевых ресурсах)
+    encodeDecodeData(data, enc){
+        data.categories.forEach((cat, key) => {
+            data.categories[key].title = enc ? this.encode(cat.title) : this.decode(cat.title);
+            cat.tasks.forEach((task, k) => {
+                if(cat.tasks){
+                    data.categories[key].tasks[k].text = enc ? this.encode(task.text) : this.decode(task.text);
+                    if(task.subtasks){
+                        task.subtasks.forEach((subtask, stk) => {
+                            data.categories[key].tasks[k].subtasks[stk].text = enc ? this.encode(subtask.text) : this.decode(subtask.text);
+                        });
+                    }
+                }
+            });
+        });
+
+        return data;
+    }
+
+
+    encode(str){
+        // Кодирование данных.
+        const encodedChars = str.split('').map(value => value.charCodeAt(0) * 7);   // 7 - ключевой символ
+        const charsNums = encodedChars.map(val => val.toString().length);
+        const encodedData = (function(str, symbNums, strLength){
+            // Подготовка строки, которая описывает сколько цифр содержится в каждом закодированном символе.
+            let numString = '';
+            symbNums.forEach(element => {
+                let elemStr = element.toString();
+                let num = elemStr.split('').length;
+                if(num < 2){                            // Все числа должны быть одинаковой длинны, чтобы потом можно было раскодировать опираясь на позиции, где в каком месте находятся те или иные группы цифр и к чему они относятся. 
+                    for(let i = 0; i < 2 - num; i++){   // Длина строки не может быть больше 2, но может быть меньше, поэтому тем, которые меньше, добавим лишний ноль спереди.
+                        elemStr = '0'+ elemStr;
+                    }
+                }
+                numString += elemStr;
+            }); 
+            // Подготовка строки с закодированными символами.
+            let cryptoString = str.join('');
+            // Структура закодироваанной строки: [число символов в исходной строке + число цифр в каждом закодированном символе + склееная закодированная строка]
+            return (strLength.toString().split('').length < 2 ? '0' + strLength : strLength) +''+ numString +''+ cryptoString;
+        })(encodedChars, charsNums, charsNums.length);
+        return encodedData;
+    }
+
+
+    decode(encodedStr){
+        // Кол-во символов в закодированной строке.
+        const encodedStrLength = encodedStr.slice(0, 2);
+        // Числа, описывающие, сколько цифр для каждого закодированного символа в строке.
+        const charsNums = encodedStr.slice(2, encodedStrLength * 2 + 2);
+        let numbersPerCharsArray = [];
+        for(let i = 0; i < encodedStrLength; i++){
+            numbersPerCharsArray.push(charsNums.slice(i*2, i*2 + 2));
+        }
+        // Получение массива закодированных символов закодированной строки в массив.
+        const encodedCharsString = encodedStr.slice(encodedStrLength * 2 + 2);
+        const encodedCharsArray = [];
+        let start = 0;
+        numbersPerCharsArray.forEach((val, key) => {
+            encodedCharsArray.push(encodedCharsString.slice(start, start + parseInt(val)));
+            start += parseInt(val);
+        });
+        // Раскодирование символов закодировонной строки и сборка их в строку.
+        let decodedString = encodedCharsArray.map((encodedChar) => {
+            const result = parseInt(encodedChar) / 7;       // 7 - ключевой символ
+            if(!Number.isInteger(result)) return '--';
+            return String.fromCharCode(result);
+        }).join('');
+        return decodedString;
+    }
+
 }
