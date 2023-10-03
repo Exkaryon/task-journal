@@ -134,6 +134,11 @@ button.green, .button.green {
     background: #590;
 }
 
+button.olive, .button.olive {
+    background: #790;
+}
+
+
 button.blue, .button.blue {
     background: #059;
 }
@@ -282,6 +287,10 @@ button:hover, .button:hover {
 #tasklist div.task[data-complete="true"] {background: linear-gradient(45deg, #cf9, #790);}
 #tasklist div.task[data-complete="true"]::after {content: '✔️';}
 #tasklist div.task[data-complete="true"]::before {content: 'выполнено'; color: #0009;}
+
+#tasklist div.task[data-complete="halftrue"] {background: linear-gradient(45deg, #e3e3e3, #890);} /*#cf9, #9c9c9c 93a752*/
+#tasklist div.task[data-complete="halftrue"]::after {content: '✔️'; filter: grayscale(1);}
+#tasklist div.task[data-complete="halftrue"]::before {content: 'частично выполнено'; color: #0009;}
 
 #tasklist div.task[data-complete="extra"] {background: linear-gradient(45deg, #fe5, #f90);}
 #tasklist div.task[data-complete="extra"]::after {content: '🔥';}

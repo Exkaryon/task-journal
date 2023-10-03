@@ -2,7 +2,7 @@ export default class Journal {
 
     baseDir = null;
     fileName = 'tasks-file.json';
-    remoteAddr = 'http://127.0.0.5:85/taskdata_dispenser.php?app_enter_key=tauri_app'; // Для релиза необходим https!
+    remoteAddr = 'http://127.0.0.5:85/taskdata_dispenser.php?app_enter_key=tauri_app'; // Для релиза необходим https!      
     data = null;
     onlyType = false;               // Будет обновлятся/считываться только локальный или удаленный файл. local/remote
     state = {                       // Состояние доступности файлов журнала, их идентификаторы и данные.
